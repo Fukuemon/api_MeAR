@@ -17,14 +17,22 @@ class Profile(models.Model):
         settings.AUTH_USER_MODEL, related_name='profile',
         on_delete=models.CASCADE
     )
-    created_on = models.DateTimeField(auto_now_add=True)
-    img = models.ImageField(blank=True, null=True, upload_to=upload_avatar_path)
+    created_on = models.DateTimeField(auto_now_add=True)  # 作成日
+    img = models.ImageField(blank=True, null=True, upload_to=upload_avatar_path)  # アバター画像
 
-# フォローフォロワー機能
+    # フォロー関連のフィールド
+    followings = models.ManyToManyField(
+        'User', verbose_name='フォロー中のユーザー', through='FriendShip',
+        related_name='+', through_fields=('follower', 'followee')
+    )
+    followers = models.ManyToManyField(
+        'User', verbose_name='フォローされているユーザー', through='FriendShip',
+        related_name='+', through_fields=('followee', 'follower')
+    )
+
+# フォロー/フォロワー機能
 class Connection(models.Model):
-    follower = models.ForeignKey(Profile, related_name="follower", on_delete=models.CASCADE)
-    following = models.ForeignKey(Profile, related_name='following', on_delete=models.CASCADE)
-    date_created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return "{} : {}".format(self.follower.nikeName, self.following.nikeName)
+    follower = models.ForeignKey("User", on_delete=models.CASCADE, related_name="following_connection")
+    following = models.ForeignKey('User', on_delete=models.CASCADE, related_name='follower_friendships')
+    class Meta:
+        unique_together = ('follower', 'following')
