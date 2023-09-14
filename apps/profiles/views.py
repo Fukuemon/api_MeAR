@@ -21,10 +21,3 @@ class MyProfileListView(generics.ListAPIView):
         return self.queryset.filter(userProfile=self.request.user)
 
 
-class FollowView(generics.CreateAPIView):
-    queryset = Connection.objects.all()
-    serializer_class = ConnectionSerializer
-
-class UnfollowView(generics.DestroyAPIView):
-    queryset = Connection.objects.all()
-    serializer_class = ConnectionSerializer
