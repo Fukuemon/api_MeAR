@@ -22,12 +22,12 @@ class Profile(models.Model):
 
     # フォロー関連のフィールド
     followings = models.ManyToManyField(
-        'User', verbose_name='フォロー中のユーザー', through='FriendShip',
-        related_name='+', through_fields=('follower', 'followee')
+        'User', verbose_name='フォロー中のユーザー', through='Connection',
+        related_name='+', through_fields=('follower', 'following')
     )
     followers = models.ManyToManyField(
-        'User', verbose_name='フォローされているユーザー', through='FriendShip',
-        related_name='+', through_fields=('followee', 'follower')
+        'User', verbose_name='フォローされているユーザー', through='Connection',
+        related_name='+', through_fields=('following', 'follower')
     )
 
 # フォロー/フォロワー機能
