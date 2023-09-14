@@ -9,6 +9,16 @@ def upload_avatar_path(instance, filename):
     return '/'.join(['avatars', str(instance.userProfile.id) + str(instance.nickName) + str(".") + str(ext)])
 
 
+# フォロー/フォロワー機能
+class Connection(models.Model):
+    follower = models.ForeignKey("Profile", on_delete=models.CASCADE, related_name="following_connection")
+    following = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='follower_friendships')
+    class Meta:
+        unique_together = ('follower', 'following')
+
+    def __str__(self):
+        return f"{self.follower} follows {self.following}"
+
 # プロフィール
 class Profile(models.Model):
     nickName = models.CharField(max_length=20 ,null=True, blank=True)
@@ -22,17 +32,15 @@ class Profile(models.Model):
 
     # フォロー関連のフィールド
     followings = models.ManyToManyField(
-        'User', verbose_name='フォロー中のユーザー', through='Connection',
+        'Profile', verbose_name='フォロー中のユーザー', through='Connection',
         related_name='+', through_fields=('follower', 'following')
     )
     followers = models.ManyToManyField(
-        'User', verbose_name='フォローされているユーザー', through='Connection',
+        'Profile', verbose_name='フォローされているユーザー', through='Connection',
         related_name='+', through_fields=('following', 'follower')
     )
 
-# フォロー/フォロワー機能
-class Connection(models.Model):
-    follower = models.ForeignKey("User", on_delete=models.CASCADE, related_name="following_connection")
-    following = models.ForeignKey('User', on_delete=models.CASCADE, related_name='follower_friendships')
-    class Meta:
-        unique_together = ('follower', 'following')
+    def __str__(self):
+        return self.nickName
+
+
