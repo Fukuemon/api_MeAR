@@ -10,12 +10,23 @@ class ConnectionSerializer(serializers.ModelSerializer):
 
 # プロフィールモデルにフォローとフォロワーを格納する
 class ProfileSerializer(serializers.ModelSerializer):
-    followings = ConnectionSerializer(many=True, read_only=True)
-    followers = ConnectionSerializer(many=True, read_only=True)
+    followings = serializers.SerializerMethodField()
+    followers = serializers.SerializerMethodField()
     created_on = serializers.DateTimeField(format="%Y-%m-%d", read_only=True)
 
     class Meta:
         model = Profile
         fields = ['nickName', 'userProfile', 'created_on', 'img', 'followings', 'followers']
         extra_kwargs = {"userProfile": {"read_only": True}}
+
+    def get_followings(self, obj):
+        # プロフィールがフォローしている人をシリアライズ
+        followings = Connection.objects.filter(follower=obj)
+        return ConnectionSerializer(followings, many=True).data
+
+    def get_followers(self, obj):
+        # プロフィールをフォローしている人をシリアライズ
+        followers = Connection.objects.filter(following=obj)
+        return ConnectionSerializer(followers, many=True).data
+
 
