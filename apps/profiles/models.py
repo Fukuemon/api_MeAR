@@ -11,7 +11,7 @@ def upload_avatar_path(instance, filename):
 
 # プロフィール
 class Profile(models.Model):
-    nickName = models.CharField
+    nickName = models.CharField(max_length=20 ,null=True, blank=True)
     # Userモデルとリレーション
     userProfile = models.OneToOneField(
         settings.AUTH_USER_MODEL, related_name='profile',
