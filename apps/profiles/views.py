@@ -35,13 +35,13 @@ def follow(request, user_id=None):
     target_user_profile = get_object_or_404(Profile, userProfile__id=following_id)
 
     if user.profile == target_user_profile:
-        return Response({"detail": "You cannot follow yourself"}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "自信をフォローすることはできません"}, status=status.HTTP_400_BAD_REQUEST)
 
     if Connection.objects.filter(follower=user.profile, following=target_user_profile).exists():
-        return Response({"detail": "Already following."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({"detail": "すでにフォローしています"}, status=status.HTTP_400_BAD_REQUEST)
 
     Connection.objects.create(follower=user.profile, following=target_user_profile)
-    return Response({"detail": "Follow successful"}, status=status.HTTP_201_CREATED)
+    return Response({"detail": "フォローに成功しました"}, status=status.HTTP_201_CREATED)
 
 
 @api_view(['DELETE'])
@@ -54,6 +54,6 @@ def unfollow(request, user_id=None):
     try:
         connection = Connection.objects.get(follower=user.profile, following=target_user_profile)
         connection.delete()
-        return Response({"detail": "Unfollow successful"}, status=status.HTTP_200_OK)
+        return Response({"detail": "フォロー解除に成功しました"}, status=status.HTTP_200_OK)
     except Connection.DoesNotExist:
         return Response({"detail": "Connection does not exist."}, status=status.HTTP_400_BAD_REQUEST)
