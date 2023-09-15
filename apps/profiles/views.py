@@ -32,15 +32,15 @@ class MyProfileListView(generics.ListAPIView):
 def follow(request, user_id=None):
     user = request.user
     following_id = request.data.get('following_id', user_id)
-    target_user = get_object_or_404(Profile, id=following_id)
+    target_user_profile = get_object_or_404(Profile, userProfile__id=following_id)
 
-    if user == target_user:
+    if user.profile == target_user_profile:
         return Response({"detail": "You cannot follow yourself"}, status=status.HTTP_400_BAD_REQUEST)
 
-    if Connection.objects.filter(follower=user.profile, following=target_user.profile).exists():
+    if Connection.objects.filter(follower=user.profile, following=target_user_profile).exists():
         return Response({"detail": "Already following."}, status=status.HTTP_400_BAD_REQUEST)
 
-    Connection.objects.create(follower=user.profile, following=target_user.profile)
+    Connection.objects.create(follower=user.profile, following=target_user_profile)
     return Response({"detail": "Follow successful"}, status=status.HTTP_201_CREATED)
 
 
@@ -49,10 +49,10 @@ def follow(request, user_id=None):
 def unfollow(request, user_id=None):
     user = request.user
     following_id = request.data.get('following_id', user_id)
-    target_user = get_object_or_404(Profile, id=following_id)
+    target_user_profile = get_object_or_404(Profile, userProfile__id=following_id)
 
     try:
-        connection = Connection.objects.get(follower=user.profile, following=target_user.profile)
+        connection = Connection.objects.get(follower=user.profile, following=target_user_profile)
         connection.delete()
         return Response({"detail": "Unfollow successful"}, status=status.HTTP_200_OK)
     except Connection.DoesNotExist:

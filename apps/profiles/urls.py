@@ -10,7 +10,7 @@ router.register("profile", views.ProfileViewSet)
 urlpatterns=[
     path("myprofile/", views.MyProfileListView.as_view(), name="myprofile"),
     path("follow/", views.follow, name="follow"),
-    path("unfollow", views.unfollow, name="unfollow"),
+    path("unfollow/", views.unfollow, name="unfollow"),
     path("",include(router.urls)),
 ]
 
