@@ -9,7 +9,7 @@ def upload_avatar_path(instance, filename):
     return '/'.join(['avatars', str(instance.userProfile.id) + str(instance.nickName) + str(".") + str(ext)])
 
 
-# フォロー/フォロワー機能
+# フォロー/フォロワー機能のための中間テーブル
 class Connection(models.Model):
     follower = models.ForeignKey("Profile", on_delete=models.CASCADE, related_name="following_connection")
     following = models.ForeignKey('Profile', on_delete=models.CASCADE, related_name='follower_friendships')
