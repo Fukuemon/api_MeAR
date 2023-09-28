@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     "djoser",
     "apps.authn.apps.AuthConfig",
     "apps.profiles.apps.ProfilesConfig",
-    "corsheaders"
+    "corsheaders",
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
